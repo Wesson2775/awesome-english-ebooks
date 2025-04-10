@@ -12,17 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # 检出当前仓库代码（使用浅克隆减少下载量）
+      # 检出当前仓库代码（增加深度以获取更完整的历史记录）
       - name: 检出当前仓库
         uses: actions/checkout@v3
         with:
-          fetch-depth: 1
+          fetch-depth: 0
       
-      # 添加上游仓库并只获取最新提交
+      # 添加上游仓库并获取更完整的历史记录
       - name: 添加上游仓库
         run: |
           git remote add upstream https://github.com/hehonghui/awesome-english-ebooks.git
-          git fetch upstream --depth=1
+          git fetch upstream --depth=50
       
       # 备份GitHub Action文件
       - name: 备份GitHub Action文件
@@ -32,18 +32,36 @@ jobs:
             cp -r .github/workflows /tmp/github-actions-backup/
           fi
       
+      # 检测上游仓库的默认分支
+      - name: 检测上游仓库的分支
+        id: detect-branch
+        run: |
+          if git ls-remote --heads upstream main | grep main; then
+            echo "UPSTREAM_BRANCH=main" >> $GITHUB_ENV
+          else
+            echo "UPSTREAM_BRANCH=master" >> $GITHUB_ENV
+          fi
+          if git rev-parse --verify --quiet main; then
+            echo "LOCAL_BRANCH=main" >> $GITHUB_ENV
+          else
+            echo "LOCAL_BRANCH=master" >> $GITHUB_ENV
+          fi
+      
       # 合并上游仓库的更改
       - name: 合并上游仓库的更改
         run: |
-          # 确保我们在主分支上
-          git checkout master || git checkout main
+          # 确保我们在正确的本地分支上
+          git checkout ${{ env.LOCAL_BRANCH }}
           
-          # 合并上游仓库的更改
-          git merge upstream/master || git merge upstream/main
-          
-          # 如果有冲突，以上游仓库为准
+          # 配置Git用户信息（在合并前设置）
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
+          
+          # 使用--allow-unrelated-histories参数合并上游仓库的更改
+          git merge upstream/${{ env.UPSTREAM_BRANCH }} --allow-unrelated-histories -m "同步上游仓库更改" || {
+            echo "合并冲突，以上游版本为准"
+            git reset --hard upstream/${{ env.UPSTREAM_BRANCH }}
+          }
       
       # 恢复GitHub Action文件
       - name: 恢复GitHub Action文件
@@ -58,4 +76,4 @@ jobs:
       # 推送更改到你的仓库
       - name: 推送更改到仓库
         run: |
-          git push origin
+          git push origin ${{ env.LOCAL_BRANCH }}
