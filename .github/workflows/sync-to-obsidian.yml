@@ -105,14 +105,14 @@ jobs:
             TARGET_DIR="/mnt/webdav/外刊集合/经济学人/${{ steps.economist.outputs.date }}"
             mkdir -p "$TARGET_DIR"
             
-            # 只上传PDF文件
-            for file in "${{ steps.economist.outputs.latest_dir }}"/*.pdf; do
+            # 只上传EPUB文件
+            for file in "${{ steps.economist.outputs.latest_dir }}"/*.epub; do
               if [ -f "$file" ]; then
-                echo "正在上传PDF文件: $file 到 $TARGET_DIR/"
+                echo "正在上传EPUB文件: $file 到 $TARGET_DIR/"
                 cp "$file" "$TARGET_DIR/"
               fi
             done
-            echo "已同步经济学人PDF到WebDAV"
+            echo "已同步经济学人EPUB到WebDAV"
           else
             echo "经济学人目录不存在或为空: ${{ steps.economist.outputs.latest_dir }}"
           fi
@@ -126,14 +126,14 @@ jobs:
             TARGET_DIR="/mnt/webdav/外刊集合/纽约客/${{ steps.newyorker.outputs.date }}"
             mkdir -p "$TARGET_DIR"
             
-            # 只上传PDF文件
-            for file in "${{ steps.newyorker.outputs.latest_dir }}"/*.pdf; do
+            # 只上传EPUB文件
+            for file in "${{ steps.newyorker.outputs.latest_dir }}"/*.epub; do
               if [ -f "$file" ]; then
-                echo "正在上传PDF文件: $file 到 $TARGET_DIR/"
+                echo "正在上传EPUB文件: $file 到 $TARGET_DIR/"
                 cp "$file" "$TARGET_DIR/"
               fi
             done
-            echo "已同步纽约客PDF到WebDAV"
+            echo "已同步纽约客EPUB到WebDAV"
           else
             echo "纽约客目录不存在或为空: ${{ steps.newyorker.outputs.latest_dir }}"
           fi
@@ -153,14 +153,14 @@ jobs:
               TARGET_DIR="/mnt/webdav/外刊集合/大西洋月刊/$ATLANTIC_DATE"
               mkdir -p "$TARGET_DIR"
               
-              # 只上传PDF文件
-              for file in "$LATEST_ATLANTIC_DIR"/*.pdf; do
+              # 只上传EPUB文件
+              for file in "$LATEST_ATLANTIC_DIR"/*.epub; do
                 if [ -f "$file" ]; then
-                  echo "正在上传PDF文件: $file 到 $TARGET_DIR/"
+                  echo "正在上传EPUB文件: $file 到 $TARGET_DIR/"
                   cp "$file" "$TARGET_DIR/"
                 fi
               done
-              echo "已同步The Atlantic PDF到WebDAV"
+              echo "已同步The Atlantic EPUB到WebDAV"
             else
               echo "未找到有效的The Atlantic目录"
             fi
@@ -183,14 +183,14 @@ jobs:
               TARGET_DIR="/mnt/webdav/外刊集合/连线杂志/$WIRED_DATE"
               mkdir -p "$TARGET_DIR"
               
-              # 只上传PDF文件
-              for file in "$LATEST_WIRED_DIR"/*.pdf; do
+              # 只上传EPUB文件
+              for file in "$LATEST_WIRED_DIR"/*.epub; do
                 if [ -f "$file" ]; then
-                  echo "正在上传PDF文件: $file 到 $TARGET_DIR/"
+                  echo "正在上传EPUB文件: $file 到 $TARGET_DIR/"
                   cp "$file" "$TARGET_DIR/"
                 fi
               done
-              echo "已同步Wired PDF到WebDAV"
+              echo "已同步Wired EPUB到WebDAV"
             else
               echo "未找到有效的Wired目录"
             fi
